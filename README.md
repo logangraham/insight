@@ -12,7 +12,6 @@ Then run `search.py`:
 `python3 search.py -q "machine learning for enzyme interaction predictions"`
 
 With flags:
-
 ```
 MANDATORY:
 -----------
@@ -26,10 +25,11 @@ OPTIONAL:
 -docpath  |   (str) The filepath of the docs to finetune on [NOT IMPLEMENTED
 ```
 
-## TODO:
+## TODO
 
 - [ ] Use SciBERT instead of DistilBERT optionality.
 - [ ] Do a single-round of fine-tuning the model on UKRI grant data.
 - [ ] Return the document title, not the most relevant sentence.
 - [ ] Store latent embeddings of documents separately so you don't have to recompute each query.
+- [ ] Incorporate active learning classification step. (Important)
 
