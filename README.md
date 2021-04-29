@@ -24,7 +24,7 @@ OPTIONAL:
 -n        |   (int) The number of most similar results to return
 -scibert  |   (bool) Whether to use SciBERT, not DistilBERT [NOT IMPLEMENTED]
 -train    |   (bool) Whether to finetune model first [NOT IMPLEMENTED]
-- docpath |   (str) The filepath of the docs to finetune on [NOT IMPLEMENTED
+-docpath |   (str) The filepath of the docs to finetune on [NOT IMPLEMENTED
 ```
 
 ## TODO:
