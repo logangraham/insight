@@ -1,7 +1,6 @@
 # Insight
-Natural language document search. Given a topic query, find the `n`  
-most similar documents. A `DistilBERT` model is used to embed the query
-and the documents.
+Natural language document search. Given a topic query, find the `n` most similar documents.  
+A `DistilBERT` model is used to embed the query and the documents.
 
 ## Getting Started
 To run, first install the requirements in your virtual environment:
@@ -24,7 +23,7 @@ OPTIONAL:
 -n        |   (int) The number of most similar results to return
 -scibert  |   (bool) Whether to use SciBERT, not DistilBERT [NOT IMPLEMENTED]
 -train    |   (bool) Whether to finetune model first [NOT IMPLEMENTED]
--docpath |   (str) The filepath of the docs to finetune on [NOT IMPLEMENTED
+-docpath  |   (str) The filepath of the docs to finetune on [NOT IMPLEMENTED
 ```
 
 ## TODO:
