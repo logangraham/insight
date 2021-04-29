@@ -29,8 +29,8 @@ OPTIONAL:
 
 ## TODO:
 
-[ ] Use SciBERT instead of DistilBERT optionality.
-[ ] Do a single-round of fine-tuning the model on UKRI grant data.
-[ ] Return the document title, not the most relevant sentence.
-[ ] Store latent embeddings of documents separately so you don't have to recompute each query.
+- [ ] Use SciBERT instead of DistilBERT optionality.
+- [ ] Do a single-round of fine-tuning the model on UKRI grant data.
+- [ ] Return the document title, not the most relevant sentence.
+- [ ] Store latent embeddings of documents separately so you don't have to recompute each query.
 
