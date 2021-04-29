@@ -1,5 +1,5 @@
-# 👁️👄👁️ Insight
-Natural language document search. Given a topic query, find the `n` most similar documents.  
+# Insight
+👁️👄👁️ Natural language document search. Given a topic query, find the `n` most similar documents.  
 A `DistilBERT` or `SciBERT` model is used to embed the query and the documents.
 
 ## 🏡 Getting Started
