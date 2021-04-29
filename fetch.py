@@ -92,9 +92,8 @@ def get_sentences(filepath="data/filtered_projects.json"):
     with open(filepath, "r") as f:
         data = json.load(f)
     abstracts = [data[k]['abstract'].replace("\n", " ").split(". ") for k in data]
-    sentences = [item + "." for sublist in abstracts for item in sublist]
+    sentences = [(item + ".").strip() for sublist in abstracts for item in sublist]
     return sentences
-
 
 
 if __name__ == "__main__":

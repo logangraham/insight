@@ -68,23 +68,20 @@ def search(model, tokenizer, query, latents, sentences, orig_mask, n_results=5):
 
 def main(argv):
     assert (FLAGS.q is not None), "Query flag (-q) can't be empty."
-    assert (not FLAGS.scibert), "Scibert hasn't been tested yet."
     assert (not FLAGS.train), "Fine-tuning the model isn't implemented yet."
     assert (FLAGS.docpath is None), "Custom document path isn't supported yet."
 
     model, tokenizer = get_infra(FLAGS.scibert, FLAGS.train)
-    print("...loaded model & tokenizer.")
     if FLAGS.docpath is None:
         docs = get_sentences()
-        print("...got docs.")
-    doc_tokens = tokenizer(docs, return_tensors="pt", padding=True, truncation=True)
-    print("...tokenized docs.")
+    doc_tokens = tokenizer(docs, return_tensors="pt", padding=True, truncation=True, max_length=192)
     latents = model(**doc_tokens, output_hidden_states=True).hidden_states[-1]
-    print("...got latent reps.")
     output = search(model, tokenizer, FLAGS.q, latents, docs, doc_tokens['attention_mask'], FLAGS.n)
-    print("...found most similar:")
-    print("\n\n")
-    print(*["\n" + el for el in output])
+    header = "OUTPUTS:"
+    print(header)
+    print(len(header)*"-")
+    print(*["\n" + f"{i}. {el}" for i, el in enumerate(output)])
+    print(len(header)*"-")
     # return output
 
 

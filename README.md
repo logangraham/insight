@@ -1,6 +1,6 @@
 # Insight
 Natural language document search. Given a topic query, find the `n` most similar documents.  
-A `DistilBERT` model is used to embed the query and the documents.
+A `DistilBERT` or `SciBERT` model is used to embed the query and the documents.
 
 ## Getting Started
 To run, first install the requirements in your virtual environment:
@@ -20,14 +20,14 @@ MANDATORY:
 OPTIONAL:
 -----------
 -n        |   (int) The number of most similar results to return
--scibert  |   (bool) Whether to use SciBERT, not DistilBERT [NOT IMPLEMENTED]
+-scibert  |   (bool) Whether to use SciBERT, not DistilBERT (NOTE: Very compute heavy! May kill your process.)
 -train    |   (bool) Whether to finetune model first [NOT IMPLEMENTED]
 -docpath  |   (str) The filepath of the docs to finetune on [NOT IMPLEMENTED
 ```
 
 ## TODO
 
-- [ ] Use SciBERT instead of DistilBERT optionality.
+- [x] Allow SciBERT instead of DistilBERT optionality.
 - [ ] Do a single-round of fine-tuning the model on UKRI grant data.
 - [ ] Return the document title, not the most relevant sentence.
 - [ ] Store latent embeddings of documents separately so you don't have to recompute each query.

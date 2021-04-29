@@ -9,6 +9,7 @@ def get_infra(scibert=False, train=False):
     :return:
     """
     model_name = "distilbert-base-uncased" if not scibert else "allenai/scibert_scivocab_uncased"
+    print(f"\nModel: {model_name}\n")
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForMaskedLM.from_pretrained(model_name)
     if train:
