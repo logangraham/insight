@@ -5,7 +5,7 @@ A `DistilBERT` or `SciBERT` model is used to embed the query and the documents.
 ## 🏡 Getting Started
 To run, first install the requirements in your virtual environment:
 
-`pip install requirements.txt`
+`pip install -r requirements.txt`
 
 Then run `search.py`:
 
