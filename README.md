@@ -19,6 +19,6 @@ Then run `streamlit run app.py`, type in your query, and hit cmd/ctrl+enter.
 - [x] Allow SciBERT instead of DistilBERT optionality.
 - [ ] Do a single-round of fine-tuning grant data.
 - [x] Experiment: use full abstract embeddings instead of sentence embeddings.
+- [ ] Add minimum word count (~125 = 83% of abstracts).
 - [ ] Experiment: find an optimal distance metric.
-- [ ] Experiment: average sentence vectors into document vectors.
 - [ ] Incorporate active learning classification step. (Important)
