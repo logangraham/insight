@@ -7,23 +7,7 @@ To run, first install the requirements in your virtual environment:
 
 `pip install -r requirements.txt`
 
-Then run `search.py`:
-
-`python3 search.py -q "machine learning for enzyme interaction predictions"`
-
-With flags:
-```
-MANDATORY:
------------
--q        |   (str) The topic / query string
-
-OPTIONAL:
------------
--n        |   (int) The number of most similar results to return
--scibert  |   (bool) Whether to use SciBERT, not DistilBERT (NOTE: Very compute heavy! May kill your process.)
--train    |   (bool) Whether to finetune model first [NOT IMPLEMENTED]
--docpath  |   (str) The filepath of the docs to finetune on [NOT IMPLEMENTED
-```
+Then run `streamlit run app.py`, type in your query, and hit cmd/ctrl+enter.
 
 ## 🔗 Links
 
@@ -33,8 +17,7 @@ OPTIONAL:
 ## ✔️ TODO
 
 - [x] Allow SciBERT instead of DistilBERT optionality.
-- [ ] Do a single-round of fine-tuning the model on UKRI grant data.
-- [ ] Return the document title, not the most relevant sentence.
-- [ ] Store latent embeddings of documents separately so you don't have to recompute each query.
+- [ ] Do a single-round of fine-tuning grant data.
+- [ ] Experiment: find an optimal distance metric.
+- [ ] Experiment: averag sentence vectors into document vectors.
 - [ ] Incorporate active learning classification step. (Important)
-
