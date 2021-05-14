@@ -1,14 +1,13 @@
 import json
 from transformers import AutoTokenizer, AutoModelForMaskedLM
 import streamlit as st
-import numpy as np
 import torch
 
 
 ## Expensive Functions
 @st.cache
 def load_embeddings():
-    M = torch.load("data/bigtensor.pt")
+    M = torch.load("data/doctensor.pt")
     return M
 
 @st.cache
@@ -61,14 +60,11 @@ def cosine_similarity(v, M):
 def L2_distance(v, M):
     return -torch.cdist(M, v).squeeze()
 
-def search(query, tokenizer, model, indices, M, n=100):
+def search(query, tokenizer, model, M):
     q = embed(query, tokenizer, model)
     sims = L2_distance(q, M)
-    rankings = torch.argsort(sims, descending=True)[:10*n]
-    rankings = indices[rankings].numpy()
-    _, idx = np.unique(rankings, return_index=True)
-    idx = torch.from_numpy(np.sort(idx))
-    result = rankings[idx].tolist()[:n]
+    rankings = torch.argsort(sims, descending=True)
+    result = rankings.tolist()
     return result
 
 ## Write app
@@ -90,7 +86,6 @@ def main():
 
     # load preamble
     embeddings = load_embeddings()
-    idx = load_indices()
     tokenizer, model = load_model()
 
     # define query
@@ -99,7 +94,7 @@ def main():
     # fetch results
     if query:
         # fetch results
-        results = search(query, tokenizer, model, idx, embeddings)
+        results = search(query, tokenizer, model, embeddings)
         
         # parameters
         col1, col2, col3 = st.beta_columns(3)
