@@ -98,6 +98,9 @@ def main():
 
     # fetch results
     if query:
+        # fetch results
+        results = search(query, tokenizer, model, idx, embeddings)
+        
         # parameters
         col1, col2, col3 = st.beta_columns(3)
         # rank by similarity or size
@@ -107,10 +110,6 @@ def main():
         with col2:
             num_results = st.slider("Number of results", 10, 100, value=5, step=1)
 
-        # fetch results
-        with st.spinner('Searching...'):
-            results = search(query, tokenizer, model, idx, embeddings)
-        
         # return data
         meta = [(metadata[str(i)]["project_title"],
                 int(metadata[str(i)]["value"]))
