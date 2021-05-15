@@ -16,9 +16,13 @@ def load_indices():
     return idx
 
 @st.cache(allow_output_mutation=True)
-def load_model(model_name="distilbert-base-uncased"):
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForMaskedLM.from_pretrained(model_name)
+def load_model(model_name='distilbert'):
+    if model_name == "scibert":
+        model_id = "allenai/scibert_scivocab_uncased"
+    else:
+        model_id = "distilbert-base-uncased"
+    tokenizer = AutoTokenizer.from_pretrained(model_id)
+    model = AutoModelForMaskedLM.from_pretrained(model_id)
     return tokenizer, model
 
 # don't cache because query will change every time
@@ -40,6 +44,7 @@ def mean_pooling(token_embeddings, attention_mask):
     :param attention_mask: torch.byte tensor of size (n_examples, n_vocab)
     :return: torch.float tensor of size (n_examples, n_latent)
     """
+    return torch.mean(token_embeddings, dim=1)
     input_mask_expanded = attention_mask.unsqueeze(-1).expand(token_embeddings.size()).float()
     sum_embeddings = torch.sum(token_embeddings * input_mask_expanded, 1)
     sum_mask = torch.clamp(input_mask_expanded.sum(1), min=1e-9)
@@ -57,12 +62,12 @@ def cosine_similarity(v, M):
     dM = M.norm(p=2, dim=1)
     return (M.matmul(v.T)).squeeze().div(dM * dv)
 
-def L2_distance(v, M):
+def L2_similarity(v, M):
     return -torch.cdist(M, v).squeeze()
 
 def search(query, tokenizer, model, M):
     q = embed(query, tokenizer, model)
-    sims = L2_distance(q, M)
+    sims = L2_similarity(q, M)
     rankings = torch.argsort(sims, descending=True)
     result = rankings.tolist()
     return result
@@ -70,11 +75,11 @@ def search(query, tokenizer, model, M):
 ## Write app
 def write_paper_table(data):
     table_md = f"""
-    |Rank|Title|Value|
-    |--|--|--|
+    |Rank|Title|Value|# words|
+    |--|--|--|--|
     """
     for i, el in enumerate(data):
-        table_md += f"""|{i+1}|**{el[0]}**|£{el[1]:,}|
+        table_md += f"""|{i+1}|**{el[0]}**|£{el[1]:,}|{el[2]}|
         """
     st.markdown(table_md)
 
@@ -104,11 +109,15 @@ def main():
         # select number of relevant papers
         with col2:
             num_results = st.slider("Number of results", 10, 100, value=5, step=1)
+        with col3:
+            min_words = st.slider("Min. words in abstract", 100, 250, value=100, step=1)
 
         # return data
         meta = [(metadata[str(i)]["project_title"],
-                int(metadata[str(i)]["value"]))
-                for i in results[:num_results]]
+                int(metadata[str(i)]["value"]),
+                int(len(metadata[str(i)]["abstract"].split())))
+                for i in results if len(metadata[str(i)]['abstract'].split()) > min_words]
+        meta = meta[:num_results]
 
         total = sum([el[1] for el in meta])
 

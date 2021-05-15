@@ -13,12 +13,22 @@ Then run `streamlit run app.py`, type in your query, and hit cmd/ctrl+enter.
 
 `DistilBERT` model taken from [this 🤗 Hugging Face repo](https://huggingface.co/distilbert-base-uncased).
 `SciBERT` model taken from [this 🤗 Hugging Face repo](https://huggingface.co/allenai/scibert_scivocab_uncased).
-
 ## ✔️ TODO
 
-- [x] Allow SciBERT instead of DistilBERT optionality.
-- [ ] Do a single-round of fine-tuning grant data.
-- [x] Experiment: use full abstract embeddings instead of sentence embeddings.
-- [ ] Add minimum word count (~125 = 83% of abstracts).
+Improve retrieval performance
+- [ ] [Fine-tune on grant data.](https://github.com/huggingface/transformers/blob/master/examples/pytorch/language-modeling/run_mlm.py) [2](https://towardsdatascience.com/hugging-face-transformers-fine-tuning-distilbert-for-binary-classification-tasks-490f1d192379)
+- [ ] Sort out why the model prefers small/short abstracts.
 - [ ] Experiment: find an optimal distance metric.
-- [ ] Incorporate active learning classification step. (Important)
+- [ ] Experiment: break abstracts into 75-word chunks, and take maximally related chunks.
+
+Classify into categories
+- [ ] Add active learning classification step. (Important)
+
+Other
+- [ ] Add spark lines.
+- [ ] Add year filters.
+
+Done
+- [x] Allow SciBERT instead of DistilBERT optionality.
+- [x] Experiment: use full abstract embeddings instead of sentence embeddings.
+- [x] Add minimum word count (~100 = 85% of abstracts).
