@@ -17,14 +17,16 @@ Then run `streamlit run app.py`, type in your query, and hit cmd/ctrl+enter.
 
 Improve retrieval performance
 - [ ] [Fine-tune on grant data.](https://github.com/huggingface/transformers/blob/master/examples/pytorch/language-modeling/run_mlm.py) [2](https://towardsdatascience.com/hugging-face-transformers-fine-tuning-distilbert-for-binary-classification-tasks-490f1d192379)
-- [ ] Sort out why the model prefers small/short abstracts.
+- [ ] Try out Doc2Vec, [GPT-neo](https://huggingface.co/EleutherAI/gpt-neo-125M)
+- [ ] Sort out why BERT models prefers small/short abstracts.
 - [ ] Experiment: find an optimal distance metric.
-- [ ] Experiment: break abstracts into 75-word chunks, and take maximally related chunks.
+- [ ] Experiment: break abstracts into 75-word chunks. Take maximally related chunks.
 
 Classify into categories
 - [ ] Add active learning classification step. (Important)
 
 Other
+- [ ] Deploy to prod.
 - [ ] Add spark lines.
 - [ ] Add year filters.
 

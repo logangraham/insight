@@ -73,13 +73,13 @@ def search(query, tokenizer, model, M):
     return result
 
 ## Write app
-def write_paper_table(data):
+def write_paper_table(data, n_words=False):
     table_md = f"""
-    |Rank|Title|Value|# words|
+    |Rank|Title|Value|{"# words|"*n_words}
     |--|--|--|--|
     """
     for i, el in enumerate(data):
-        table_md += f"""|{i+1}|**{el[0]}**|£{el[1]:,}|{el[2]}|
+        table_md += f"""|{i+1}|**{el[0]}**|£{el[1]:,}|{(str(el[2]) + "|")*n_words}
         """
     st.markdown(table_md)
 
