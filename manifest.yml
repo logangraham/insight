@@ -5,4 +5,4 @@ applications:
   disk_quota: 2G
   build_packs:
   - python_buildpack
-  command: streamlit run app.py
+  command: streamlit run app.py --server.port 8080  --server.enableWebsocketCompression=false

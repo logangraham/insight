@@ -4,6 +4,8 @@ import streamlit as st
 import torch
 
 
+st.set_page_config(page_title="UK Science R&D Spending Search Engine")
+
 ## Expensive Functions
 @st.cache
 def load_embeddings():
@@ -73,7 +75,7 @@ def search(query, tokenizer, model, M):
     return result
 
 ## Write app
-def write_paper_table(data, n_words=False):
+def write_paper_table(data, n_words=True):
     table_md = f"""
     |Rank|Title|Value|{"# words|"*n_words}
     |--|--|--|--|
@@ -88,13 +90,14 @@ def main():
         metadata = json.load(f)
 
     st.title("What 🔬 science do we fund?")
+    st.write('This search engine helps you answer the question: _"How much are we funding X?"_, where X is some topic. The topic is anything you can describe in words. The engine uses sophisticated machine learning models to find grants that are closest to your topic.')
 
     # load preamble
     embeddings = load_embeddings()
     tokenizer, model = load_model()
 
     # define query
-    query = st.text_area("Query", "")
+    query = st.text_area("Topic", "")
 
     # fetch results
     if query:
