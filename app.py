@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 from transformers import AutoTokenizer, AutoModelForMaskedLM
 import streamlit as st
 import torch
@@ -11,11 +12,6 @@ st.set_page_config(page_title="UK Science R&D Spending Search Engine")
 def load_embeddings():
     M = torch.load("data/doctensor.pt")
     return M
-
-@st.cache
-def load_indices():
-    idx = torch.load("data/indices.pt")
-    return idx
 
 @st.cache(allow_output_mutation=True)
 def load_model(model_name='distilbert'):
@@ -85,6 +81,39 @@ def write_paper_table(data, n_words=True):
         """
     st.markdown(table_md)
 
+def sparkline(data, figsize=(4, 0.25), **kwargs):
+  """
+  creates a sparkline
+  """
+  from matplotlib import pyplot as plt
+  import base64
+  from io import BytesIO
+ 
+  data = list(data)
+ 
+  fig, ax = plt.subplots(1, 1, figsize=figsize, **kwargs)
+  x = [i for i in range(len(data))]
+  ax.plot(data)
+  ax.fill_between(x, data, len(data)*[min(data)], alpha=0.1)
+#   ax.set_axis_off()
+  ax.xaxis.set_ticks([min(x), max(x)])
+  ax.xaxis.set_ticklabels(["2015", "2021"])
+  ax.yaxis.set_visible(False)
+  artists = ax.get_children()
+  artists.remove(ax.yaxis)
+  ax.tick_params(axis=u'both', which=u'both',length=0)
+  ticklabels = ax.get_xticklabels()
+  # set the alignment for outer ticklabels
+  ticklabels[0].set_ha("left")
+  ticklabels[-1].set_ha("right")
+  ax.set_frame_on(False)
+  ax.axis('tight')
+  
+  fig.set_tight_layout(True)
+  fig.subplots_adjust(left=0) and \
+
+  return fig
+
 def main():
     with open("data/metadata.json", "r") as f:
         metadata = json.load(f)
@@ -118,21 +147,31 @@ def main():
         # return data
         meta = [(metadata[str(i)]["project_title"],
                 int(metadata[str(i)]["value"]),
-                int(len(metadata[str(i)]["abstract"].split())))
+                int(len(metadata[str(i)]["abstract"].split())),
+                int(datetime.strptime(metadata[str(i)]['start_date'], "%d/%m/%Y %H:%M").year))
                 for i in results if len(metadata[str(i)]['abstract'].split()) > min_words]
         meta = meta[:num_results]
 
+        # get total
         total = sum([el[1] for el in meta])
 
+        # sort for printing
         if rank == "£ value":
             meta = sorted(meta, key=lambda x: -x[1])
 
-        st.markdown(f"""
-        \
-        \
-        # £{total:,}
-        💵 Total spent
-        """)
+        #get sparklines
+        _1, spark, _3 = st.beta_columns(3)
+        with spark:
+
+            st.markdown(f"""
+            \
+            \
+            💵 Total spent
+            # £{total:,}
+            """)
+
+            spark_data = [sum([el[1] for el in meta if el[3] == year]) for year in range(2015, 2022)]
+            st.pyplot(sparkline(spark_data))
 
 
         st.write(f"""
