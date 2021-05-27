@@ -22,21 +22,22 @@ You'll need the metadata (`metadata.json`) and embedding (`doctensor.pt`) files.
 ## ✔️ TODO
 
 Improve retrieval performance
-- [ ] [Fine-tune on grant data.](https://github.com/huggingface/transformers/blob/master/examples/pytorch/language-modeling/run_mlm.py) [2](https://towardsdatascience.com/hugging-face-transformers-fine-tuning-distilbert-for-binary-classification-tasks-490f1d192379)
-- [ ] Try out Doc2Vec, [GPT-neo](https://huggingface.co/EleutherAI/gpt-neo-125M)
-- [ ] Sort out why BERT models prefers small/short abstracts.
+- [ ] Try using a different embedding layer (2nd to last?)
+- [ ] Try with [Sentence Transformers](https://github.com/UKPLab/sentence-transformers)
+- [ ] Try out full BERT, Doc2Vec, [GPT-neo](https://huggingface.co/EleutherAI/gpt-neo-125M), Word2Vec, and ensemble
+- [ ] Experiment with mixture of experts model, e.g. bio & CS papers handled by SciBERT or BioBERT.
+- [ ] Sort out why BERT models prefers small/short abstracts. (padding?)
 - [ ] Experiment: find an optimal distance metric.
 - [ ] Experiment: break abstracts into 75-word chunks. Take maximally related chunks.
+- [x] [Fine-tune on grant data.](https://github.com/huggingface/transformers/blob/master/examples/pytorch/language-modeling/run_mlm.py) [2](https://towardsdatascience.com/hugging-face-transformers-fine-tuning-distilbert-for-binary-classification-tasks-490f1d192379)
+- [x] Allow SciBERT instead of DistilBERT optionality.
+- [x] Experiment: use full abstract embeddings instead of sentence embeddings.
 
 Classify into categories
 - [ ] Add active learning classification step. (Important)
 
 Other
-- [x] Deploy to prod.
-- [x] Add spark lines.
 - [ ] Add year filters.
-
-Done
-- [x] Allow SciBERT instead of DistilBERT optionality.
-- [x] Experiment: use full abstract embeddings instead of sentence embeddings.
+- [x] Deploy to prod.
 - [x] Add minimum word count (~100 = 85% of abstracts).
+- [x] Add spark lines.
