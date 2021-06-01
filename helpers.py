@@ -2,21 +2,38 @@ import streamlit as st
 import matplotlib.pyplot as plt
 
 
-def write_paper_table(data, n_words=True):
-    table_md = f"""
-    |Rank|Title|Value|{"# words|"*n_words}
-    |--|--|--|--|
-    """
-    for i, el in enumerate(data):
-        table_md += f"""|{i+1}|**{el[0]}**|£{el[1]:,}|{(str(el[2]) + "|")*n_words}
-        """
-    st.markdown(table_md)
+def write_paper_table(data, n_words=True, distance=True):
+  """
+  Writes a markdown table of papers and their titles.
+
+  :param data:
+  :param n_words: bool; if True, add column with abstract word count.
+  """
+  table = f"""
+  |Rank|Title|Value|{"# words|"*n_words}{"Similarity|"*distance}
+  |--|--|--|--|
+  """
+  for i, el in enumerate(data):
+    line = f"""|{i+1}|**{el["title"]}**|£{el["value"]:,}|"""
+    if n_words:
+      line += f"""{str(el["n_words"])}|"""
+    if distance:
+      line += f"""{str(round(el["distance"], 2))}"""
+    line = f"""{line}
+            """
+    table += line
+
+  st.markdown(table)
 
 def sparkline(data, figsize=(4, 0.25), **kwargs):
   """
-  creates a sparkline
+  Creates a sparkline from a list of ints or floats.
+
+  :param data: np.array, series, or list of data to plot
+  :param figsize: matplotlib figsize of plot
+  :param **kwargs: other keyword arguments for plt.subplots
   """
- 
+
   data = list(data)
  
   fig, ax = plt.subplots(1, 1, figsize=figsize, **kwargs)

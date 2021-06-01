@@ -18,6 +18,13 @@ def mean_pooling(token_embeddings, attention_mask):
     return sum_embeddings / sum_mask
 
 def embed(query, tokenizer, model):
+    """
+    Embed `query` using `model` and return it.
+
+    :param query: str of query
+    :param tokenizer: HuggingFace tokenizer instance
+    :param model: HuggingFace model instance
+    """
     token = tokenizer([query], return_tensors='pt', truncation=True, padding=True)
     query_embedding = model(**token, output_hidden_states=True).hidden_states[-1]
     ## use pooling across vocab size
@@ -60,8 +67,9 @@ def return_ranked(query, tokenizer, model, M):
     q = embed(query, tokenizer, model)
     sims = cosine_similarity(q, M)
     rankings = torch.argsort(sims, descending=True)
-    result = rankings.tolist()
-    return result
+    sims = sims[rankings].tolist()
+    ranks = rankings.tolist()
+    return list(zip(ranks, sims))
 
 def return_ranked_by_sentence(query, tokenizer, model, indices, M):
     """
@@ -78,8 +86,10 @@ def return_ranked_by_sentence(query, tokenizer, model, indices, M):
     q = embed(query, tokenizer, model)
     sims = cosine_similarity(q, M)
     rankings = torch.argsort(sims, descending=True)
-    rankings = indices[rankings].numpy()
-    _, idx = np.unique(rankings, return_index=True)
-    idx = torch.from_numpy(np.sort(idx))
-    result = rankings[idx].tolist()
-    return result
+    doc_rankings = indices[rankings].numpy()
+    _, first_doc_rankings = np.unique(doc_rankings, return_index=True)
+    final_doc_rankings = doc_rankings[first_doc_rankings]
+    matching_sims = sims[doc_rankings][first_doc_rankings]
+    ranks = final_doc_rankings.tolist()
+    matching_sims = matching_sims.tolist()
+    return list(zip(ranks, matching_sims))

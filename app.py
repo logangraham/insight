@@ -47,12 +47,6 @@ def main():
 
     # fetch results
     if query:
-        # fetch results
-        if use_sentences:
-            results = return_ranked_by_sentence(query, tokenizer, model, idx, embeddings)
-        else:
-            results = return_ranked(query, tokenizer, model, embeddings)
-        
         # parameters
         col1, col2, col3 = st.beta_columns(3)
         # rank by similarity or size
@@ -60,24 +54,41 @@ def main():
             rank_strategy = st.selectbox("Sort by", ["Similarity", "£ value"])
         # select number of relevant papers
         with col2:
-            num_results = st.slider("Number of results", 10, 100, value=25, step=1)
+            num_results = st.slider("Number of results", 25, 1000, value=50, step=25)
         with col3:
-            min_words = st.slider("Min. words in abstract", 100, 250, value=100, step=1)
+            min_words = st.slider("Min. words in abstract", 1, 250, value=100, step=1)
+
+        # fetch results
+        # TODO: Fix sentence segment search
+        # if use_sentences:
+        #     results = return_ranked_by_sentence(query, tokenizer, model, idx, embeddings)
+        # else:
+        #     results = return_ranked(query, tokenizer, model, embeddings)
+        results = return_ranked(query, tokenizer, model, embeddings)
+
+        # subset to enough words
+        results = [r for r in results if len(metadata[str(r[0])]['abstract'].split()) > min_words]
 
         # return data
-        meta = [(metadata[str(i)]["project_title"],
-                int(metadata[str(i)]["value"]),
-                int(len(metadata[str(i)]["abstract"].split())),
-                int(datetime.strptime(metadata[str(i)]['start_date'], "%d/%m/%Y %H:%M").year))
-                for i in results if len(metadata[str(i)]['abstract'].split()) > min_words]
-        meta = meta[:num_results]
 
-        # get total
-        total = sum([el[1] for el in meta])
+        meta = [{"title": metadata[str(i)]["project_title"],
+                "value": int(metadata[str(i)]["value"]),
+                "n_words": len(metadata[str(i)]["abstract"].split()),
+                "date": int(datetime.strptime(metadata[str(i)]['start_date'],
+                                              "%d/%m/%Y %H:%M").year),
+                "distance": dist}
+                for i, dist in results[:num_results]
+                if len(metadata[str(i)]["abstract"].split()) > min_words]
 
         # sort for printing
         if rank_strategy == "£ value":
-            meta = sorted(meta, key=lambda x: -x[1])
+            meta = sorted(meta, key=lambda x: -x["value"])
+        else:
+            meta = sorted(meta, key=lambda x: -x["distance"])
+
+        # get total
+        total = sum([el["value"] for el in meta])
+
 
         #get sparklines
         _1, spark, _3 = st.beta_columns(3)
@@ -90,7 +101,7 @@ def main():
             # £{total:,}
             """)
 
-            spark_data = [sum([el[1] for el in meta if el[3] == year]) for year in range(2015, 2022)]
+            spark_data = [sum([el["value"] for el in meta if el["date"] == year]) for year in range(2015, 2022)]
             st.pyplot(sparkline(spark_data))
 
 
