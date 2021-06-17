@@ -11,12 +11,12 @@ st.set_page_config(page_title="UK Science R&D Spending Search")
 
 ## Expensive Functions
 @st.cache
-def load_embeddings(embeddings_path="./data/distilbert2tensor.pt"):
+def load_embeddings(embeddings_path="./data/distilbert3tensor.pt"):
     M = torch.load(embeddings_path)
     return M
 
 @st.cache(allow_output_mutation=True)
-def load_model(path_or_name='./model/distilbert2/'):
+def load_model(path_or_name='./model/distilbert3/'):
     tokenizer = AutoTokenizer.from_pretrained(path_or_name)
     model = AutoModelForMaskedLM.from_pretrained(path_or_name)
     return tokenizer, model
@@ -31,18 +31,19 @@ def main():
         metadata = json.load(f)
 
     st.title("What 🔬 science do we fund?")
-    st.write('This search engine helps you answer the question: _"How much are we funding X?"_, where X is some topic. The topic is anything you can describe in words. The engine uses sophisticated machine learning models to find grants that are closest to your topic.')
+    st.write('This search engine helps you answer the question: _"How much are we funding X?"_, where X is some topic. The topic is anything you can describe in words. The engine uses deep learning models to find grants that are closest to your topic.')
 
     # define query
-    query = st.text_area("Topic", "")
-    use_sentences = st.checkbox("Use multi-sentence embeddings? (Instead of document embeddings)")
+    query = st.text_area("Topic (hint: use at least 5-10 words to describe your topic)", "")
+    embeddings = load_embeddings()
+    # use_sentences = st.checkbox("Use multi-sentence embeddings? (Instead of document embeddings)")
 
     # load preamble
-    if use_sentences:
-        embeddings = load_embeddings("./data/chunktensor.pt")
-        idx = load_indices()
-    else:
-        embeddings = load_embeddings()
+    # if use_sentences:
+    #     embeddings = load_embeddings("./data/chunktensor.pt")
+    #     idx = load_indices()
+    # else:
+    #     embeddings = load_embeddings()
     tokenizer, model = load_model()
 
     # fetch results
@@ -70,21 +71,17 @@ def main():
         results = [r for r in results if len(metadata[str(r[0])]['abstract'].split()) > min_words]
 
         # return data
-
         meta = [{"title": metadata[str(i)]["project_title"],
                 "value": int(metadata[str(i)]["value"]),
                 "n_words": len(metadata[str(i)]["abstract"].split()),
                 "date": int(datetime.strptime(metadata[str(i)]['start_date'],
                                               "%d/%m/%Y %H:%M").year),
                 "distance": dist}
-                for i, dist in results[:num_results]
-                if len(metadata[str(i)]["abstract"].split()) > min_words]
+                for i, dist in results[:num_results]]
 
         # sort for printing
         if rank_strategy == "£ value":
             meta = sorted(meta, key=lambda x: -x["value"])
-        else:
-            meta = sorted(meta, key=lambda x: -x["distance"])
 
         # get total
         total = sum([el["value"] for el in meta])
